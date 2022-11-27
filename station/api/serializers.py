@@ -9,8 +9,8 @@ class StationSerializer(serializers.ModelSerializer):
         read_only_fields = ('state', 'date_creation', 'date_broken')
 
 
-class InstructionsSerializer(serializers.ModelSerializer):
+class CoordinateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Instructions
-        fields = ('id', 'user', 'axis', 'distance')
-        read_only_fields = ('user', 'distance')
+        model = Station
+        fields = ('x', 'y', 'z')
+        read_only_fields = ('x', 'y', 'z')

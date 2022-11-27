@@ -9,5 +9,6 @@ router.register(r'stations', StationViewSet, basename='stations')
 
 urlpatterns = [
     path('', include(router.urls)),
-    #path('stations/<id>/state/', Instruction.as_view())
+    path(r'auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
 ]

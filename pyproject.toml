@@ -10,6 +10,9 @@ packages = [{include = "space_station"}]
 python = "^3.7"
 Django = "^3.2.16"
 djangorestframework = "^3.14.0"
+djoser = "^2.1.0"
+djangorestframework-simplejwt = "^4.7.2"
+
 
 
 [build-system]

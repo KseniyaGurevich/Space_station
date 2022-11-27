@@ -7,52 +7,26 @@ CHOICES = (
     ('broken', 'Сломана')
 )
 
+AXIS = (
+    ('x', 'x'),
+    ('y', 'y'),
+    ('z', 'z')
+)
+
+
 User = get_user_model()
 
 
-class Station(models.Model):
-    name = models.CharField(
-        max_length=30,
-        verbose_name='Название станции'
-    )
-    state = models.CharField(
-        default='running',
-        choices=CHOICES, max_length=30,
-        verbose_name='Состояние'
-    )
-    date_creation = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Дата создания'
-    )
-    date_broken = models.DateTimeField(
-        auto_now=True,
-        verbose_name='Дата поломки'
-    )
-
-    class Meta:
-        verbose_name = 'Станция'
-        verbose_name_plural = 'Станции'
-
-    def __str__(self):
-        return f'{self.name}'
-
-
 class Instructions(models.Model):
-    # station = models.ForeignKey(
-    #     Station,
-    #     on_delete=models.CASCADE,
-    #     related_name='instruction',
-    #     verbose_name='Название станции'
-    # )
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь, который создал указание'
     )
     axis = models.CharField(
-        max_length=50,
-        verbose_name='Координаты'
-    )
+        max_length=5,
+        choices=AXIS,
+     )
     distance = models.IntegerField(
         verbose_name='Пройденное расстояние'
     )
@@ -62,25 +36,37 @@ class Instructions(models.Model):
         verbose_name_plural = 'Состояния'
 
     def __str__(self):
-        return f'{self.axis}'
+        return f'{self.axis}={self.distance}'
 
 
-class StationInstruction(models.Model):
-    station = models.ForeignKey(
-        Station,
-        on_delete=models.CASCADE,
-        related_name='station',
-        verbose_name='Название станции'
+class Station(models.Model):
+    name = models.CharField(
+        max_length=30,
+        verbose_name='Название станции',
+        unique=True,
     )
-    instruction = models.ForeignKey(
-        Instructions,
-        on_delete=models.CASCADE,
-        related_name='instruction',
-        verbose_name='Смещение'
+    state = models.CharField(
+        default='running',
+        choices=CHOICES,
+        max_length=30,
+        verbose_name='Состояние'
     )
+    date_creation = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата создания'
+    )
+    date_broken = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name='Дата поломки'
+    )
+    x = models.IntegerField(default=100)
+    y = models.IntegerField(default=100)
+    z = models.IntegerField(default=100)
 
     class Meta:
-        verbose_name = 'Инструкция для станции'
-        verbose_name_plural = 'Инструкции для станций'
+        verbose_name = 'Станция'
+        verbose_name_plural = 'Станции'
 
-
+    def __str__(self):
+        return f'{self.name}'
