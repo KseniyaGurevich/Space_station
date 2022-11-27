@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 
 class StationSerializer(serializers.ModelSerializer):
+    """Станция"""
     class Meta:
         model = Station
         fields = ('id', 'name', 'state', 'date_creation', 'date_broken')
@@ -10,6 +11,7 @@ class StationSerializer(serializers.ModelSerializer):
 
 
 class CoordinateSerializer(serializers.ModelSerializer):
+    """Координаты станции"""
     class Meta:
         model = Station
         fields = ('x', 'y', 'z')

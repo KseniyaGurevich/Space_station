@@ -29,34 +29,31 @@ class StationViewSet(viewsets.ModelViewSet):
             serializer = CoordinateSerializer(station)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            if station.state == "running":
-                data = request.data
-                instruction = Instructions.objects.create(
-                    user=request.user,
-                    axis=data['axis'],
-                    distance=data['distance']
-                )
-                axis_list = {
-                    'x': station.x,
-                    'y': station.y,
-                    'z': station.z
-                }
-                for axis in axis_list:
-                    if axis == instruction.axis:
-                        coord = axis_list[axis] + instruction.distance
-                        if coord < 0:
-                            station.state = "broken"
-                            station.date_broken = datetime.datetime.now()
-                            station.save()
-                        if axis == "x":
-                            station.x = coord
-                        elif axis == "y":
-                            station.y = coord
-                        else:
-                            station.z = coord
-                station.save()
-                serializer = CoordinateSerializer(station)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                serializer = CoordinateSerializer(station)
-                return Response("Cтанция сломана и не может двигаться",  status.HTTP_204_NO_CONTENT)
+            data = request.data
+            instruction = Instructions.objects.create(
+                user=request.user,
+                axis=data['axis'],
+                distance=data['distance']
+            )
+            axis_list = {
+                'x': station.x,
+                'y': station.y,
+                'z': station.z
+            }
+            for axis in axis_list:
+                if axis == instruction.axis:
+                    coord = axis_list[axis] + instruction.distance
+                    if coord < 0:
+                        station.state = "broken"
+                        station.date_broken = datetime.datetime.now()
+                        station.save()
+                    if axis == "x":
+                        station.x = coord
+                    elif axis == "y":
+                        station.y = coord
+                    else:
+                        station.z = coord
+            station.save()
+            serializer = CoordinateSerializer(station)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+

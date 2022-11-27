@@ -18,6 +18,7 @@ User = get_user_model()
 
 
 class Instructions(models.Model):
+    """Указание для движения станции"""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -40,6 +41,7 @@ class Instructions(models.Model):
 
 
 class Station(models.Model):
+    """Станция"""
     name = models.CharField(
         max_length=30,
         verbose_name='Название станции',
