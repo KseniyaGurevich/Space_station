@@ -27,9 +27,10 @@ class Instructions(models.Model):
     axis = models.CharField(
         max_length=5,
         choices=AXIS,
+        verbose_name='Ось'
      )
     distance = models.IntegerField(
-        verbose_name='Пройденное расстояние'
+        verbose_name='Расстояние'
     )
 
     class Meta:
@@ -62,9 +63,9 @@ class Station(models.Model):
         blank=True,
         verbose_name='Дата поломки'
     )
-    x = models.IntegerField(default=100)
-    y = models.IntegerField(default=100)
-    z = models.IntegerField(default=100)
+    x = models.IntegerField(default=100, verbose_name='Координата x')
+    y = models.IntegerField(default=100, verbose_name='Координата y')
+    z = models.IntegerField(default=100, verbose_name='Координата z')
 
     class Meta:
         verbose_name = 'Станция'

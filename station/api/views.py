@@ -1,3 +1,4 @@
+from django.utils import timezone
 import datetime
 
 from rest_framework import viewsets, status
@@ -45,7 +46,7 @@ class StationViewSet(viewsets.ModelViewSet):
                     coord = axis_list[axis] + instruction.distance
                     if coord < 0:
                         station.state = "broken"
-                        station.date_broken = datetime.datetime.now()
+                        station.date_broken = datetime.datetime.now(tz=timezone.utc)
                         station.save()
                     if axis == "x":
                         station.x = coord
@@ -55,5 +56,5 @@ class StationViewSet(viewsets.ModelViewSet):
                         station.z = coord
             station.save()
             serializer = CoordinateSerializer(station)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
