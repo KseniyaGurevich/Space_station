@@ -28,7 +28,7 @@ class Instructions(models.Model):
         max_length=5,
         choices=AXIS,
         verbose_name='Ось'
-     )
+    )
     distance = models.IntegerField(
         verbose_name='Расстояние'
     )

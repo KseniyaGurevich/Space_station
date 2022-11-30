@@ -16,6 +16,7 @@ def api_client():
     from rest_framework.test import APIClient
     return APIClient()
 
+
 @pytest.fixture
 def auth_user(api_client):
     """Создание и аутентификация пользователя"""

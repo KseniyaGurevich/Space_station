@@ -11,7 +11,12 @@ python = "^3.7"
 Django = "^3.2.16"
 djangorestframework = "^3.14.0"
 djoser = "^2.1.0"
-djangorestframework-simplejwt = "^4.7.2"
+djangorestframework-simplejwt = "^4.8.0"
+drf-spectacular = "^0.24.2"
+pytest = "^7.2.0"
+pytest-django = "^4.5.2"
+coverage = "^6.5.0"
+drf-yasg = "^1.21.4"
 
 
 

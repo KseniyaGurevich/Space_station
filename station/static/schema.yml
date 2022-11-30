@@ -1,8 +1,13 @@
 openapi: 3.0.3
 info:
-  title: Space stations API
+  title: Сервис по управлению космическими станциями
   version: 1.0.0
-  description: Space station control
+  description: 'В сервисе хранится информация станциях и их позиции в пространстве.
+    Через сервис можно управлять станций и изменять из позицию. У станции 3 координаты:
+    x, y, z. При запуске станции ее координаты по умолчанию равны: 100, 100, 100.
+    Станция исправно может двигаться только в диапазоне положительных координат. Если
+    Станция вышла за эти координаты, мы считаем ее неисправной, даже если в будущем
+    она вернулась обратно в разрешенную зону. '
 paths:
   /auth/jwt/create/:
     post:
@@ -88,13 +93,6 @@ paths:
   /auth/users/:
     get:
       operationId: auth_users_list
-      parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
       tags:
       - auth
       security:
@@ -104,7 +102,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedUserList'
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
           description: ''
     post:
       operationId: auth_users_create
@@ -519,13 +519,7 @@ paths:
   /stations/:
     get:
       operationId: stations_list
-      parameters:
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
+      description: Список станций
       tags:
       - stations
       security:
@@ -536,10 +530,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedStationList'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Station'
           description: ''
     post:
       operationId: stations_create
+      description: Создать станцию.
       tags:
       - stations
       requestBody:
@@ -671,6 +668,7 @@ paths:
   /stations/{id}/state/:
     get:
       operationId: stations_state_retrieve
+      description: Получение координат станции.
       parameters:
       - in: path
         name: id
@@ -692,6 +690,7 @@ paths:
           description: ''
     post:
       operationId: stations_state_create
+      description: Изменение позиции станции.
       parameters:
       - in: path
         name: id
@@ -715,7 +714,7 @@ paths:
       security:
       - jwtAuth: []
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
@@ -735,60 +734,24 @@ components:
       - uid
     Coordinate:
       type: object
+      description: Координаты станции
       properties:
         x:
           type: integer
           readOnly: true
+          title: Координата x
         y:
           type: integer
           readOnly: true
+          title: Координата y
         z:
           type: integer
           readOnly: true
+          title: Координата z
       required:
       - x
       - y
       - z
-    PaginatedStationList:
-      type: object
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=4
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=2
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Station'
-    PaginatedUserList:
-      type: object
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=4
-        previous:
-          type: string
-          nullable: true
-          format: uri
-          example: http://api.example.org/accounts/?page=2
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
     PasswordResetConfirm:
       type: object
       properties:
@@ -804,6 +767,7 @@ components:
       - uid
     PatchedStation:
       type: object
+      description: Станция
       properties:
         id:
           type: integer
@@ -884,6 +848,7 @@ components:
       type: string
     Station:
       type: object
+      description: Станция
       properties:
         id:
           type: integer

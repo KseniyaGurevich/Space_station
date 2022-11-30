@@ -1,4 +1,4 @@
-from .models import Station, Instructions
+from .models import Station
 from rest_framework import serializers
 
 

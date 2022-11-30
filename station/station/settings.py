@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import timedelta
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,10 +45,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'station.urls'
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,7 +79,6 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
-#AUTH_USER_MODEL = 'users.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -114,6 +115,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -126,7 +129,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
@@ -136,8 +138,14 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Space stations API',
-    'DESCRIPTION': 'Space station control',
+    'TITLE': 'Сервис по управлению космическими станциями',
+    'DESCRIPTION': 'В сервисе хранится информация станциях и их позиции в пространстве. '
+                   'Через сервис можно управлять станций и изменять из позицию. У станции 3 координаты: x, y, z. '
+                   'При запуске станции ее координаты по умолчанию равны: 100, 100, 100. '
+                   'Станция исправно может двигаться только в диапазоне положительных координат. '
+                   'Если Станция вышла за эти координаты, мы считаем ее неисправной, '
+                   'даже если в будущем она вернулась обратно в разрешенную зону. ',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+

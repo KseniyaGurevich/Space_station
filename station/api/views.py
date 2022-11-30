@@ -1,4 +1,5 @@
 from django.utils import timezone
+from drf_spectacular.utils import extend_schema
 import datetime
 
 from rest_framework import viewsets, status
@@ -17,13 +18,37 @@ class StationViewSet(viewsets.ModelViewSet):
     serializer_class = StationSerializer
     queryset = Station.objects.all()
 
+    @extend_schema(
+        description='Список станций',
+        request=StationSerializer,
+        responses={200: StationSerializer},
+    )
+    def list(self, request):
+        return super().list(request)
+
+    @extend_schema(
+        description='Создать станцию.',
+        request=StationSerializer,
+        responses=StationSerializer,
+    )
+    def create(self, request):
+        return super().create(request)
+
+    @extend_schema(description='Получение координат станции.',
+                   methods=["GET"],
+                   responses={200: CoordinateSerializer},
+                   )
+    @extend_schema(description='Изменение позиции станции.',
+                   methods=["POST"],
+                   responses={201: CoordinateSerializer},
+                   )
     @action(
         detail=True,
         methods=['GET', 'POST'],
         url_path='state',
         permission_classes=(IsAuthenticatedOrReadOnly, ),
-        serializer_class=CoordinateSerializer
-        )
+        serializer_class=CoordinateSerializer,
+    )
     def state(self, request, pk):
         station = get_object_or_404(Station, pk=pk)
         if request.method == 'GET':
@@ -46,7 +71,9 @@ class StationViewSet(viewsets.ModelViewSet):
                     coord = axis_list[axis] + instruction.distance
                     if coord < 0:
                         station.state = "broken"
-                        station.date_broken = datetime.datetime.now(tz=timezone.utc)
+                        station.date_broken = datetime.datetime.now(
+                            tz=timezone.utc
+                        )
                         station.save()
                     if axis == "x":
                         station.x = coord
@@ -57,4 +84,3 @@ class StationViewSet(viewsets.ModelViewSet):
             station.save()
             serializer = CoordinateSerializer(station)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
