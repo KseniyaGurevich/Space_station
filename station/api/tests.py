@@ -107,6 +107,8 @@ class TestStation:
             format='json'
         )
         station_2 = Station.objects.filter(name="First")[0]
+        assert instruction_1.status_code == status.HTTP_201_CREATED
+        assert instruction_2.status_code == status.HTTP_201_CREATED
         assert coord_1.json()['y'] == -400, "Координата y после сдвига ее на -500 должна быть равна -400"
         assert coord_2.json()['y'] == 266, "Координата y после сдвига ее на 666 должна быть равна 266"
         assert station_1.state == 'broken', "После укзания_1 станция должна быть сломана"
@@ -116,7 +118,7 @@ class TestStation:
 
     @pytest.mark.usefixtures("test_station", "auth_user")
     def test_create_instruction_z(self, api_client):
-        """Поломка станции при y < 0"""
+        """Поломка станции при z < 0"""
         station = Station.objects.filter(name="First")[0]
         instruction_1 = api_client.post(
             f'/stations/{station.id}/state/',
@@ -138,11 +140,11 @@ class TestStation:
             format='json'
         )
         station_2 = Station.objects.filter(name="First")[0]
+        assert instruction_1.status_code == status.HTTP_201_CREATED
+        assert instruction_2.status_code == status.HTTP_201_CREATED
         assert coord_1.json()['z'] == -400, "Координата z после сдвига ее на -500 должна быть равна -400"
         assert coord_2.json()['z'] == 266, "Координата z после сдвига ее на 666 должна быть равна 266"
         assert station_1.state == 'broken', "После укзания_1 станция должна быть сломана"
         assert station_2.state == 'broken', "После укзания_2 станция также должна быть сломана"
         assert station_1.date_broken == station_2.date_broken, ("Время поломки после первого указания и "
                                                                 "после второго должно быть одинаковое")
-
-

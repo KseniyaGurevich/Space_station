@@ -9,6 +9,9 @@ RUN pip3 install poetry
 RUN poetry install --no-root
 COPY station/ /app
 
-# CMD ["pip3", "freeze"]
-CMD ["python3", "manage.py", "runserver", "0:8000"]
-#CMD ["gunicorn", "recipes.wsgi:application", "--bind", "0:8000" ]
+
+# Чтобы запустить dockerfile с библиотекой SQLite:
+#CMD ["python3", "manage.py", "runserver", "0:8000"]
+
+# Чтобы запустить docker-compose с библиотекой PostgreSQL:
+CMD ["gunicorn", "station.wsgi:application", "--bind", "0:8000" ]

@@ -1,22 +1,74 @@
-# Space_station
+#Сервис по управлению космическими станциями.
 
-1 час + 2 ч + 2 ч
+<hr>
+<p> Чтобы запустить приложение БЕЗ docker-compose (локально или в docker-контейнере) с использованием базы данных sqlLite, нужно:<p/>
+<p>В файле .env ввести:</p>
 
-python manage.py spectacular --file schema.yml
+```
+RUNNING_IN_DOCKER = Yes
+```
 
+Путь к файлу .env (лежит в папке с settings.py):
 
-Сервис по управлению космическими станциями.
-
-В сервисе хранится информация станциях и их позиции в пространстве. Через сервис можно CRUD станций и изменять из позицию.
-
-У станции 3 координаты: x, y, z. При запуске станции ее координаты по умолчанию равны: 100, 100, 100.
-Станция исправно может двигаться только в диапазоне положительных координат. Если Станция вышла за эти координаты, мы считаем ее неисправной, даже если в будущем она вернулась обратно в разрешенную зону.
-
-Позиция станции меняется через Указание: ось и значение смещения. За одно Указание можно сместиться только в одну сторону на неограниченное расстояние.
-Например:
-Указание #1: ось: x, смещение: -100. После получения этого указания станция сдвинется по оси X на 100 влево 
- 
-PS. то что это космическая станция не отменяет того, что ее можно удалить или отправить на -999 координаты.
+```
+Space_station/station/station/.env
+```
 
 
-python manage.py spectacular --file static/schema.yml
+<hr>
+
+Чтобы запустить приложение ЧЕРЕЗ docker-compose с использованием базы данных PostgreSQL
+###Запустить Docker c бд sqlite
+python manage.py migrate
+docker build -t station2 .
+docker run --name Station2 -it -p 8000:8000 station2
+
+
+Загрузка базы данных:
+python -Xutf8 ./manage.py dumpdata > data.json
+
+
+
+Space_station/.env:
+
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME="name data base in postgres"
+POSTGRES_USER=name user
+POSTGRES_PASSWORD=password user
+DB_HOST=db
+DB_PORT=5432
+
+
+
+###после запуска docker-compose запустить миграции в контейнере web:
+docker-compose exec web python manage.py migrate
+
+
+###Сделать локально копию базы данных:
+docker-compose exec web python -Xutf8 ./manage.py dumpdata > data.json
+
+###Загрузить базу данных в контенер web
+docker-compose cp data.json web:app/
+
+###загрузить базу данных из data.json
+docker-compose exec web python manage.py loaddata data.json
+
+
+### Зайти в контейр web можно командой:
+docker-compose exec -it web bash
+
+###сделать миграции
+docker-compose exec web python manage.py makemigrations
+docker-compose exec web python manage.py migrate
+
+###загрузить базу данных из data.json
+docker-compose exec web python -Xutf8 ./manage.py dumpdata > data.json
+docker-compose cp data.json web:app/
+docker-compose exec web python manage.py loaddata data.json
+
+http://127.0.0.1:8000/admin/ - админка
+http://127.0.0.1:8000/swagger-ui/ - документация
+
+
+
+Затраченное время:  20 часов

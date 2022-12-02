@@ -9,7 +9,7 @@ services:
       - ./.env
 
   web:
-    build: .
+    build: ../
     restart: always
     ports:
       - "8000:8000"
@@ -18,5 +18,3 @@ services:
     env_file:
       - ./.env
 
-volumes:
-  postgres:
